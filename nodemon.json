@@ -1,0 +1,5 @@
+{
+  "ignore": ["auth/*"],
+  "watch": ["index.js"],
+  "ext": "js,json"
+}
