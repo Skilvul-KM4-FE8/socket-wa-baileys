@@ -155,8 +155,6 @@ npm install express qrcode-terminal @whiskeysockets/baileys fs-extra pino dotenv
 
 ## 👨‍💻 Kontributor
 
-- **Muhamad Alfito Santosa** — [@alfitosans\_](https://github.com/alfitosans_)
+- **Muhamad Alfito Santosa** — [@alfitosantosa\_](https://github.com/alfitosantosa)
 
 ---
-
-Jika kamu ingin aku bantu **autogenerate README dalam bahasa Inggris atau Markdown fancy**, tinggal bilang saja!
