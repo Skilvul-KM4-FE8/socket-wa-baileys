@@ -8,7 +8,7 @@ router.post("/send", sendMessage);
 router.post("/bulk", sendBulkMessages);
 router.post("/sendfile", sendFile);
 router.post("/sendfilebulk", sendBulkFiles);
-router.post("/sendImage", sendImage);
+router.post("/sendimage", sendImage);
 router.post("/sendimagebulk", sendBulkImages);
 
 module.exports = router;

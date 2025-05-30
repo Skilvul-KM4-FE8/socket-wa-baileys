@@ -1,141 +1,95 @@
-Berikut adalah versi yang sudah **dirapikan dan disusun profesional** untuk dokumentasi README dan tutorial POST API WhatsApp Gateway dengan **Baileys + Express.js**:
-
----
-
 # 📱 WhatsApp Gateway with Baileys + Express.js
 
-Sebuah WhatsApp Gateway berbasis [Baileys](https://github.com/WhiskeySockets/Baileys) dan Express.js, mendukung:
+A robust WhatsApp Gateway based on [Baileys](https://github.com/WhiskeySockets/Baileys) and Express.js, featuring:
 
-- Scan QR untuk login WhatsApp
-- Kirim pesan teks, file, dan gambar via REST API
-- Logout dan generate QR baru
-- Struktur kode modular & scalable
+- QR code login for WhatsApp
+- Send text messages, files, and images via REST API
+- Logout and generate new QR sessions
+- Modular and scalable code structure
 
----
+![QR Code Example](https://via.placeholder.com/300) <!-- Add actual screenshot if available -->
 
-## 🚀 Fitur
+## 🚀 Features
 
-- 🔐 Login WhatsApp dengan QR Code
-- ✉️ Kirim pesan teks
-- 📁 Kirim file atau gambar
-- 🚪 Logout dan refresh sesi
-- 📦 API siap digunakan untuk integrasi frontend
+- 🔐 WhatsApp login via QR Code
+- ✉️ Send text messages
+- 📁 Send files and documents
+- 🖼️ Send images with captions
+- 📢 Bulk messaging capability
+- 🚪 Session logout and refresh
+- 📦 API ready for frontend integration
 
----
-
-## 📁 Struktur Folder
-
-```bash
-.
-├── app.js                      # Inisialisasi Express App
-├── server.js                   # Entry point (start server + WA socket)
-├── routes/
-│   └── whatsappRoutes.js       # Routing untuk QR, kirim pesan, logout
-├── controllers/
-│   └── messageController.js    # Logic kirim pesan (opsional modularisasi)
-├── services/
-│   └── whatsappService.js      # WhatsApp session & koneksi
-├── auth/                       # Folder penyimpanan sesi WhatsApp (auto-generated)
-├── public/                     # Static files (opsional)
-├── .env                        # Konfigurasi environment
-├── package.json
-└── README.md
-```
-
----
-
-## ⚙️ Instalasi
+## ⚙️ Installation
 
 ```bash
 git clone https://github.com/username/baileys-wa-gateway.git
 cd baileys-wa-gateway
-
 npm install
 ```
 
----
+````
 
-## 🧪 Menjalankan Server
+## 🧪 Running the Server
 
 ```bash
 node server.js
-# atau untuk development:
+# or for development:
 nodemon server.js
 ```
 
----
-
-## 🌐 API Endpoint
+## 🌐 API Endpoints
 
 ### 🔍 GET `/api/qr`
 
-Mendapatkan QR Code untuk login WhatsApp (jika belum login).
+Get QR code for WhatsApp login
 
-**Response:**
+### ✉️ POST `/send`
 
-```json
-{
-  "qr": "data string"
-}
-```
-
----
-
-### ✉️ POST `/send-message`
-
-Mengirim pesan teks ke nomor WhatsApp.
+Send text message to a WhatsApp number
 
 **Request Body:**
 
 ```json
 {
   "number": "6281234567890",
-  "message": "Halo dari API WhatsApp!"
+  "message": "Hello from WhatsApp API!"
 }
 ```
 
-**Response:**
+### 📢 POST `/bulk`
+
+Send text messages to multiple numbers
+
+**Request Body:**
 
 ```json
 {
-  "success": true,
-  "message": "✅ Message sent successfully."
+  "messages": [
+    { "number": "6281234567890", "message": "Message 1" },
+    { "number": "6289876543210", "message": "Message 2" }
+  ]
 }
 ```
 
----
+### 📁 POST `/sendfile`
 
-### 📁 POST `/send-file`
+Send file to a WhatsApp number
 
-Mengirim file ke WhatsApp.
+**Request Body:**
 
 ```json
 {
   "number": "6281234567890",
   "filePath": "https://example.com/file.pdf",
-  "caption": "Ini file"
+  "caption": "Here's the PDF file"
 }
 ```
 
----
+### 📁 POST `/sendfilebulk`
 
-### 🖼️ POST `/send-image`
+Send files to multiple numbers
 
-Mengirim gambar ke WhatsApp.
-
-```json
-{
-  "number": "6281234567890",
-  "imagePath": "https://example.com/image.jpg",
-  "caption": "Ini gambar"
-}
-```
-
----
-
-### 📦 POST `/send-bulk-files`
-
-Mengirim beberapa file sekaligus.
+**Request Body:**
 
 ```json
 {
@@ -154,11 +108,25 @@ Mengirim beberapa file sekaligus.
 }
 ```
 
----
+### 🖼️ POST `/sendImage`
 
-### 🖼️ POST `/send-bulk-images`
+Send image to a WhatsApp number
 
-Mengirim beberapa gambar sekaligus.
+**Request Body:**
+
+```json
+{
+  "number": "6281234567890",
+  "imagePath": "https://example.com/image.jpg",
+  "caption": "Check this image"
+}
+```
+
+### 🖼️ POST `/sendimagebulk`
+
+Send images to multiple numbers
+
+**Request Body:**
 
 ```json
 {
@@ -166,42 +134,47 @@ Mengirim beberapa gambar sekaligus.
     {
       "number": "6281234567890",
       "imagePath": "https://example.com/image1.jpg",
-      "caption": "Gambar 1"
+      "caption": "Image 1"
     },
     {
       "number": "6289876543210",
       "imagePath": "https://example.com/image2.jpg",
-      "caption": "Gambar 2"
+      "caption": "Image 2"
     }
   ]
 }
 ```
 
----
-
 ### 🚪 POST `/api/logout`
 
-Logout dari WhatsApp dan reset sesi.
+Logout WhatsApp session and generate new QR
 
-**Response:**
+## 📁 Project Structure
 
-```json
-{
-  "message": "✅ Logged out and reconnected."
-}
+```bash
+.
+├── app.js                      # Express application setup
+├── server.js                   # Entry point (server + WA socket)
+├── routes/
+│   └── whatsappRoutes.js       # API routes for QR, messages, logout
+├── controllers/
+│   └── messageController.js    # Message handling logic
+├── services/
+│   └── whatsappService.js      # WhatsApp session management
+├── auth/                       # WhatsApp session storage
+├── public/                     # Static files (optional)
+├── .env                        # Environment configuration
+├── package.json
+└── README.md
 ```
 
----
+## 📝 Environment Configuration
 
-## 📝 Konfigurasi `.env`
-
-Buat file `.env` di root project:
+Create `.env` file in root directory:
 
 ```bash
 PORT=4567
 ```
-
----
 
 ## 📦 Dependencies
 
@@ -212,26 +185,38 @@ PORT=4567
 - [`pino`](https://www.npmjs.com/package/pino)
 - [`dotenv`](https://www.npmjs.com/package/dotenv)
 
+Install with:
+
 ```bash
 npm install express qrcode-terminal @whiskeysockets/baileys fs-extra pino dotenv
 ```
 
----
+## 👨‍💻 Contributors
 
-## 📸 Preview Terminal
+- **Muhamad Alfito Santosa** - [@alfitosantosa](https://github.com/alfitosantosa)
 
-```bash
-🔑 Scan QR Code:
-█▀▀▀▀▀█ ▀▄█▀█ ▀▄▀  █ █ █ █▀▀▀▀▀█
-...
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ```
 
----
+This README includes:
+1. Clear project description
+2. Feature highlights
+3. Installation instructions
+4. Detailed API documentation
+5. Project structure overview
+6. Environment setup
+7. Dependency information
+8. Contributor credit
+9. License information
 
-## 👨‍💻 Kontributor
-
-- **Muhamad Alfito Santosa** — [@alfitosantosa\_](https://github.com/alfitosantosa)
-
----
-
-Jika kamu ingin versi Markdown ini dikonversi ke HTML atau dibuatkan template `Postman Collection`, saya bisa bantu juga!
+You can customize it further by:
+- Adding actual screenshots
+- Including a demo GIF/video
+- Adding more detailed setup instructions
+- Including test cases or examples
+- Adding deployment instructions
+```
+````
