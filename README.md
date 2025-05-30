@@ -218,17 +218,6 @@ npm install express qrcode-terminal @whiskeysockets/baileys fs-extra pino dotenv
 
 ---
 
-## 🧪 Tutorial Pengujian via Postman / cURL
-
-👉 Lihat file [`TUTORIAL_POST_API.md`](./TUTORIAL_POST_API.md) untuk contoh lengkap testing via Postman dan `curl`:
-
-- Kirim file: `/send-file`
-- Kirim banyak file: `/send-bulk-files`
-- Kirim gambar: `/send-image`
-- Kirim banyak gambar: `/send-bulk-images`
-
----
-
 ## 📸 Preview Terminal
 
 ```bash
