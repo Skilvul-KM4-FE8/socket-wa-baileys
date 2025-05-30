@@ -158,3 +158,187 @@ npm install express qrcode-terminal @whiskeysockets/baileys fs-extra pino dotenv
 - **Muhamad Alfito Santosa** — [@alfitosantosa\_](https://github.com/alfitosantosa)
 
 ---
+
+Berikut adalah file `.md` berjudul `TUTORIAL_POST_API.md` yang berisi **tutorial lengkap cara melakukan POST ke API WhatsApp Media Sender** menggunakan tools seperti **Postman** dan **cURL**:
+
+---
+
+# 📬 Tutorial POST ke API WhatsApp Media Sender
+
+Dokumen ini memberikan panduan langkah demi langkah untuk mengirim **file**, **gambar**, baik **satu per satu** maupun **secara massal** ke WhatsApp melalui API.
+
+---
+
+## 🔧 Persiapan
+
+Sebelum mulai, pastikan:
+
+1. Server API Anda sudah berjalan (contoh: [http://localhost:4567](http://localhost:4567)).
+2. Anda sudah **scan QR Code** WhatsApp via terminal.
+3. Anda punya URL file/gambar yang valid dan langsung bisa diakses (misalnya dari Firebase, S3, Cloudinary, dll).
+
+---
+
+## 📮 1. Kirim File (POST `/send-file`)
+
+### ✅ Postman
+
+1. Buka Postman → Buat tab baru.
+2. Method: `POST`
+3. URL: `http://localhost:4567/send-file`
+4. Tab `Body` → pilih `raw` → pilih tipe: `JSON`
+5. Tempel JSON berikut:
+
+```json
+{
+  "number": "6281234567890",
+  "filePath": "https://example.com/doc.pdf",
+  "caption": "Ini dokumen"
+}
+```
+
+### ✅ cURL
+
+```bash
+curl -X POST http://localhost:4567/send-file \
+  -H "Content-Type: application/json" \
+  -d '{
+    "number": "6281234567890",
+    "filePath": "https://example.com/doc.pdf",
+    "caption": "Ini dokumen"
+  }'
+```
+
+---
+
+## 📮 2. Kirim Banyak File (POST `/send-bulk-files`)
+
+### ✅ Postman
+
+- URL: `http://localhost:4567/send-bulk-files`
+- Body:
+
+```json
+{
+  "files": [
+    {
+      "number": "6281234567890",
+      "filePath": "https://example.com/file1.pdf",
+      "caption": "File 1"
+    },
+    {
+      "number": "6289876543210",
+      "filePath": "https://example.com/file2.pdf",
+      "caption": "File 2"
+    }
+  ]
+}
+```
+
+### ✅ cURL
+
+```bash
+curl -X POST http://localhost:4567/send-bulk-files \
+  -H "Content-Type: application/json" \
+  -d '{
+    "files": [
+      {
+        "number": "6281234567890",
+        "filePath": "https://example.com/file1.pdf",
+        "caption": "File 1"
+      },
+      {
+        "number": "6289876543210",
+        "filePath": "https://example.com/file2.pdf",
+        "caption": "File 2"
+      }
+    ]
+  }'
+```
+
+---
+
+## 🖼️ 3. Kirim Gambar (POST `/send-image`)
+
+### ✅ Postman
+
+- URL: `http://localhost:4567/send-image`
+- Body:
+
+```json
+{
+  "number": "6281234567890",
+  "imagePath": "https://example.com/image.jpg",
+  "caption": "Ini gambar"
+}
+```
+
+### ✅ cURL
+
+```bash
+curl -X POST http://localhost:4567/send-image \
+  -H "Content-Type: application/json" \
+  -d '{
+    "number": "6281234567890",
+    "imagePath": "https://example.com/image.jpg",
+    "caption": "Ini gambar"
+  }'
+```
+
+---
+
+## 🖼️ 4. Kirim Banyak Gambar (POST `/send-bulk-images`)
+
+### ✅ Postman
+
+- URL: `http://localhost:4567/send-bulk-images`
+- Body:
+
+```json
+{
+  "images": [
+    {
+      "number": "6281234567890",
+      "imagePath": "https://example.com/image1.jpg",
+      "caption": "Gambar 1"
+    },
+    {
+      "number": "6289876543210",
+      "imagePath": "https://example.com/image2.jpg",
+      "caption": "Gambar 2"
+    }
+  ]
+}
+```
+
+### ✅ cURL
+
+```bash
+curl -X POST http://localhost:4567/send-bulk-images \
+  -H "Content-Type: application/json" \
+  -d '{
+    "images": [
+      {
+        "number": "6281234567890",
+        "imagePath": "https://example.com/image1.jpg",
+        "caption": "Gambar 1"
+      },
+      {
+        "number": "6289876543210",
+        "imagePath": "https://example.com/image2.jpg",
+        "caption": "Gambar 2"
+      }
+    ]
+  }'
+```
+
+---
+
+## ℹ️ Tips Tambahan
+
+- Gunakan VPN jika file Anda dibatasi region tertentu.
+- Untuk testing cepat, Anda bisa upload file ke [file.io](https://www.file.io) atau layanan hosting gratis lainnya.
+
+---
+
+Jika Anda ingin menambahkan contoh upload video/audio atau ingin versi HTML dari dokumentasi ini, cukup beri tahu saya.

@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  whatsapp-api:
+    build: .
+    container_name: whatsapp-gateway
+    ports:
+      - "4567:4567"
+    volumes:
+      - ./auth:/app/auth # Simpan session WA
+    environment:
+      - PORT=4567
+    restart: unless-stopped
