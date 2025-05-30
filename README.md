@@ -27,8 +27,6 @@ cd baileys-wa-gateway
 npm install
 ```
 
-````
-
 ## 🧪 Running the Server
 
 ```bash
@@ -198,25 +196,3 @@ npm install express qrcode-terminal @whiskeysockets/baileys fs-extra pino dotenv
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-```
-
-This README includes:
-1. Clear project description
-2. Feature highlights
-3. Installation instructions
-4. Detailed API documentation
-5. Project structure overview
-6. Environment setup
-7. Dependency information
-8. Contributor credit
-9. License information
-
-You can customize it further by:
-- Adding actual screenshots
-- Including a demo GIF/video
-- Adding more detailed setup instructions
-- Including test cases or examples
-- Adding deployment instructions
-```
-````
