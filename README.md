@@ -106,7 +106,7 @@ Send files to multiple numbers
 }
 ```
 
-### 🖼️ POST `/sendImage`
+### 🖼️ POST `/sendimage`
 
 Send image to a WhatsApp number
 
