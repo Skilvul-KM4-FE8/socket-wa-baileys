@@ -8,26 +8,34 @@ router.get("/qr", async (req, res) => {
     const qr = getCurrentQr();
     const status = getConnectionStatus();
 
-    if (!qr && status !== "connecting") {
-      await connectToWhatsApp();
+    console.log(`QR Endpoint - Status: ${status}, QR: ${qr ? "exists" : "null"}`); // Debug log
+
+    if (!qr) {
+      if (status !== "connecting") {
+        console.log("No QR available, initiating new connection...");
+        await connectToWhatsApp();
+      }
       return res.status(202).json({
-        message: "Preparing new QR code...",
+        status,
+        message: status === "connecting" ? "Waiting for QR generation..." : "Initiating new connection...",
       });
     }
 
-    if (!qr) {
-      return res.status(204).end(); // No content but not an error
-    }
-
     res.json({
-      qr,
       status,
+      qr,
       expiresAt: Date.now() + 60000,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("QR Endpoint Error:", err);
+    res.status(500).json({
+      status: getConnectionStatus(),
+      error: err.message,
+    });
   }
 });
+
+// ... (status dan logout endpoint tetap sama)
 
 // Get WhatsApp status
 router.get("/status", (req, res) => {
