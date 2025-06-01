@@ -24,14 +24,14 @@ async function initializeWhatsApp() {
   });
 
   sock.ev.on("connection.update", (update) => {
-    console.log("Connection Update:", update); // Debug logging
+    // console.log("Connection Update:", update); // Debug logging
 
     const { connection, lastDisconnect, qr } = update;
 
     if (qr) {
       currentQr = qr;
       connectionStatus = "connecting";
-      console.log("QR Received:", qr.substring(0, 20) + "..."); // Log partial QR
+      // console.log("QR Received:", qr.substring(0, 20) + "..."); // Log partial QR
     }
 
     if (connection === "open") {
@@ -100,6 +100,10 @@ async function logoutWhatsApp() {
   }
 }
 
+function getSock() {
+  return sock;
+}
+
 function getCurrentQr() {
   return currentQr;
 }
@@ -116,4 +120,5 @@ module.exports = {
   getCurrentQr,
   getConnectionStatus,
   logoutWhatsApp,
+  getSock,
 };
