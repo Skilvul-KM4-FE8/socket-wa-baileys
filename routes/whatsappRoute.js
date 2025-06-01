@@ -11,6 +11,17 @@ router.get("/qr", (req, res) => {
 });
 
 // Get WhatsApp status
+router.get("/status", (req, res) => {
+  const sock = require("../services/whatsappService").getSock();
+  if (!sock) return res.status(404).json({ message: "Tidak ada koneksi WhatsApp." });
+
+  const status = sock.authState;
+  res.json({
+    status: status ? "Connected" : "Disconnected",
+    auth: status,
+    browser: ["Baileys-Express", "Chrome", "1.0.0"],
+  });
+});
 
 // Logout & refresh QR
 router.post("/logout", async (req, res) => {
