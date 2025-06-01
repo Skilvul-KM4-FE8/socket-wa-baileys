@@ -1,76 +1,81 @@
 const { makeWASocket, DisconnectReason, fetchLatestBaileysVersion, useMultiFileAuthState } = require("@whiskeysockets/baileys");
-const qrcode = require("qrcode-terminal");
 const pino = require("pino");
-const fs = require("fs-extra"); // install via npm i fs-extra
+const fs = require("fs-extra");
+const path = require("path");
 
 let sock;
-let currentQr = null; // simpan QR terbaru
+let currentQr = null;
+let connectionStatus = "disconnected"; // ['connecting', 'connected', 'disconnected']
 
 async function connectToWhatsApp() {
-  const { state, saveCreds } = await useMultiFileAuthState("./auth");
-  const { version, isLatest } = await fetchLatestBaileysVersion();
-  console.log(`✅ Using WhatsApp v${version.join(".")}, isLatest: ${isLatest}`);
+  if (connectionStatus === "connecting") return;
+  connectionStatus = "connecting";
 
-  sock = makeWASocket({
-    version,
-    logger: pino({ level: "silent" }),
-    auth: state,
-    browser: ["Baileys-Express", "Chrome", "1.0.0"],
-    getMessage: async () => ({ conversation: "Hello from Baileys!" }),
-  });
+  try {
+    const authDir = path.join(__dirname, "../auth");
+    await fs.ensureDir(authDir);
 
-  sock.ev.on("connection.update", (update) => {
-    const { connection, lastDisconnect, qr } = update;
+    const { state, saveCreds } = await useMultiFileAuthState(authDir);
+    const { version } = await fetchLatestBaileysVersion();
 
-    if (qr) {
-      currentQr = qr; // simpan QR
-      console.log("🔑 Scan QR Code:");
-      qrcode.generate(qr, { small: true });
-    }
+    sock = makeWASocket({
+      version,
+      logger: pino({ level: "silent" }),
+      auth: state,
+      printQRInTerminal: false,
+      browser: ["Baileys-Express", "Chrome", "1.0.0"],
+    });
 
-    if (connection === "close") {
-      const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
-      console.log("❌ Connection closed:", lastDisconnect?.error, "Reconnect:", shouldReconnect);
-      if (shouldReconnect) connectToWhatsApp();
-    }
+    sock.ev.on("connection.update", (update) => {
+      const { connection, lastDisconnect, qr } = update;
 
-    if (connection === "open") {
-      console.log("✅ Connected to WhatsApp");
-      currentQr = null;
-    }
-  });
+      if (qr) {
+        currentQr = qr;
+        connectionStatus = "connecting";
+      }
 
-  sock.ev.on("messages.upsert", (m) => {
-    console.log("📩 Message received:", JSON.stringify(m, null, 2));
-  });
+      if (connection === "close") {
+        const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
+        connectionStatus = "disconnected";
 
-  sock.ev.on("creds.update", saveCreds);
-}
+        if (shouldReconnect) {
+          setTimeout(connectToWhatsApp, 5000);
+        }
+      }
 
-async function logoutWhatsApp() {
-  if (sock) {
-    try {
-      await sock.logout(); // logout dari WhatsApp
-      sock = null;
-      currentQr = null;
+      if (connection === "open") {
+        currentQr = null;
+        connectionStatus = "connected";
+      }
+    });
 
-      // Tunggu sejenak agar file dilepaskan (penting di Docker/Windows)
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Hapus folder auth
-      await fs.remove("./auth/*");
-
-      console.log("🚪 Logged out and removed session.");
-    } catch (err) {
-      console.error("❌ Error during logout:", err);
-    }
-  } else {
-    console.log("⚠️ No active session to logout.");
+    sock.ev.on("creds.update", saveCreds);
+  } catch (err) {
+    console.error("Connection error:", err);
+    connectionStatus = "disconnected";
   }
 }
 
-function getSock() {
-  return sock;
+async function logoutWhatsApp() {
+  if (!sock) return;
+
+  try {
+    await sock.logout();
+    connectionStatus = "disconnected";
+    currentQr = null;
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await fs.emptyDir(path.join(__dirname, "../auth"));
+
+    console.log("Logged out successfully");
+  } catch (err) {
+    console.error("Logout error:", err);
+    throw err;
+  }
+}
+
+function getConnectionStatus() {
+  return connectionStatus;
 }
 
 function getCurrentQr() {
@@ -80,6 +85,6 @@ function getCurrentQr() {
 module.exports = {
   connectToWhatsApp,
   getCurrentQr,
-  getSock,
+  getConnectionStatus,
   logoutWhatsApp,
 };
