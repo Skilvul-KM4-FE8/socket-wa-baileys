@@ -24,7 +24,11 @@ app.use("/api/messages", messageRoutes);
 app.use("/api", whatsappRoutes);
 
 app.get("/", (req, res) => {
-  res.send("🚀 WhatsApp Gateway is running");
+  // res.send("🚀 WhatsApp Gateway is running");
+  res.status(200);
+  res.json({
+    message: "🚀 WhatsApp Gateway is running",
+  });
 });
 
 module.exports = app;

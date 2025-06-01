@@ -10,6 +10,8 @@ router.get("/qr", (req, res) => {
   res.json({ qr });
 });
 
+// Get WhatsApp status
+
 // Logout & refresh QR
 router.post("/logout", async (req, res) => {
   await logoutWhatsApp();
