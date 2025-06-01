@@ -34,7 +34,7 @@ router.get("/status", (req, res) => {
   const status = getConnectionStatus();
   res.json({
     status, // 'connecting', 'connected', or 'disconnected'
-    timestamp: new Date().toISOString(),
+    timestamp: new Date(),
   });
 });
 
