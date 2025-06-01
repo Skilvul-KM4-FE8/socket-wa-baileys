@@ -19,7 +19,6 @@ router.get("/status", (req, res) => {
   res.json({
     status: status ? "Connected" : "Disconnected",
     auth: status,
-    
   });
 });
 
@@ -27,8 +26,7 @@ router.get("/status", (req, res) => {
 router.post("/logout", async (req, res) => {
   await logoutWhatsApp();
   // Reconnect untuk mendapatkan QR baru
-  const { connectToWhatsApp } = 
-   require("../services/whatsappService");
+  const { connectToWhatsApp } = require("../services/whatsappService");
   await connectToWhatsApp();
   res.json({ message: "✅ Logged out and reconnected." });
 });
