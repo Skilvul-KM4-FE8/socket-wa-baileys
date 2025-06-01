@@ -9,7 +9,7 @@ let connectionStatus = "disconnected"; // ['connecting', 'connected', 'disconnec
 let reconnectAttempts = 0;
 
 async function initializeWhatsApp() {
-  const authDir = path.join(__dirname, "../auth");
+  const authDir = path.join(__dirname, "./auth");
   await fs.ensureDir(authDir);
 
   const { state, saveCreds } = await useMultiFileAuthState(authDir);
@@ -92,7 +92,7 @@ async function logoutWhatsApp() {
 
     // Clear auth files
     try {
-      await fs.emptyDir(path.join(__dirname, "../auth"));
+      await fs.emptyDir(path.join(__dirname, "./auth"));
       console.log("Auth directory cleared");
     } catch (err) {
       console.error("Error clearing auth:", err);
