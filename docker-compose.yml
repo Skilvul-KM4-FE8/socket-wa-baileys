@@ -7,22 +7,7 @@ services:
     ports:
       - "4567:4567"
     volumes:
-      - whatsapp-auth:/app/auth # Gunakan named volume
+      - ./auth:/app/auth # Simpan session WA
     environment:
       - PORT=4567
-      - NODE_ENV=production
-      - ALLOWED_ORIGINS=*
     restart: unless-stopped
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-volumes:
-  whatsapp-auth:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /path/on/host/auth # Ganti dengan path absolut di VPS
