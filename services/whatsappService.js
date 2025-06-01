@@ -49,16 +49,26 @@ async function connectToWhatsApp() {
 
 async function logoutWhatsApp() {
   if (sock) {
-    await sock.logout(); // logout dari WA
-    sock = null;
-    currentQr = null;
-    // hapus folder auth (multi-file auth state)
-    await fs.remove("./auth");
-    console.log("🚪 Logged out and removed session.");
+    try {
+      await sock.logout(); // logout dari WhatsApp
+      sock = null;
+      currentQr = null;
+
+      // Tunggu sejenak agar file dilepaskan (penting di Docker/Windows)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Hapus folder auth
+      await fs.remove("./auth");
+
+      console.log("🚪 Logged out and removed session.");
+    } catch (err) {
+      console.error("❌ Error during logout:", err);
+    }
   } else {
     console.log("⚠️ No active session to logout.");
   }
 }
+
 
 function getSock() {
   return sock;
