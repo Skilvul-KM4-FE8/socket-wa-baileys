@@ -58,7 +58,7 @@ async function logoutWhatsApp() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Hapus folder auth
-      await fs.remove("./auth");
+      await fs.remove("./auth/*");
 
       console.log("🚪 Logged out and removed session.");
     } catch (err) {
@@ -68,7 +68,6 @@ async function logoutWhatsApp() {
     console.log("⚠️ No active session to logout.");
   }
 }
-
 
 function getSock() {
   return sock;
