@@ -19,12 +19,12 @@ async function initializeWhatsApp() {
     version,
     logger: pino({ level: "silent" }),
     auth: state,
-    printQRInTerminal: true, // Aktifkan untuk debugging
+    printQRInTerminal: false, // Aktifkan untuk debugging
     browser: ["Baileys-Express", "Chrome", "1.0.0"],
   });
 
   sock.ev.on("connection.update", (update) => {
-    // console.log("Connection Update:", update); // Debug logging
+    console.log("Connection Update:", update); // Debug logging
 
     const { connection, lastDisconnect, qr } = update;
 
