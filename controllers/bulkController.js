@@ -1,47 +1,33 @@
 const { getSock } = require("../services/whatsappService");
 
 exports.sendBulkMessages = async (req, res) => {
-  const { numbers, message } = req.body;
+  const messages = req.body;
 
-  if (!Array.isArray(numbers) || numbers.length === 0 || !message) {
-    return res.status(400).json({ error: "'numbers' must be a non-empty array and 'message' is required" });
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return res.status(400).json({ error: "Request body must be a non-empty array of messages." });
   }
-
-  //post
-
-  // [
-  //   {
-  //     number: "1234567890",
-  //     message: "Hello, this is a test message",
-  //   },
-  //   {
-  //     number: "0987654321",
-  //     message: "Hello, this is another test message",
-  //   },
-  // ];
 
   try {
     const sock = getSock();
     const results = [];
 
-    for (const number of numbers) {
-      let id, text;
-      if (typeof number === "object" && number.number && number.message) {
-        id = number.number.includes("@g.us") ? number.number : `${number.number}@s.whatsapp.net`;
-        text = number.message;
-      } else {
-        id = number.includes("@g.us") ? number : `${number}@s.whatsapp.net`;
-        text = message;
+    for (const item of messages) {
+      if (!item.number || !item.message) {
+        results.push({ number: item.number || "-", status: "error", message: "Missing number or message" });
+        continue;
       }
 
+      const id = item.number.includes("@g.us") ? item.number : `${item.number}@s.whatsapp.net`;
+
       try {
-        await sock.sendMessage(id, { text: message });
-        results.push({ number, status: "success", message: "✅ Message sent successfully" });
+        await sock.sendMessage(id, { text: item.message });
+        results.push({ number: item.number, status: "success", message: "✅ Message sent successfully" });
       } catch (err) {
-        console.error(`❌ Error sending message to ${number}:`, err);
-        results.push({ number, status: "error", message: `Failed to send message: ${err.message}` });
+        console.error(`❌ Error sending message to ${item.number}:`, err);
+        results.push({ number: item.number, status: "error", message: `Failed to send message: ${err.message}` });
       }
     }
+
     res.json({ success: true, results });
   } catch (error) {
     console.error("❌ Error in sendBulkMessages:", error);
